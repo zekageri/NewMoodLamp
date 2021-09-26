@@ -1,0 +1,18 @@
+body{
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #1f1d2b;
+}
+
+.colorSection{
+    display: flex;
+    justify-content: center;
+}
+
+.page{
+    padding-top: 20px;
+    height: 100%;
+}
