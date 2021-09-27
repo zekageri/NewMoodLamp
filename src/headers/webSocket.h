@@ -1,6 +1,12 @@
 #ifndef webSocket_h
 #define webSocket_h
 
+static const inline void clearSocketClients(){
+    EVERY_N_SECONDS(30){
+        ws.cleanupClients();
+    }
+}
+
 void onWsEvent(AsyncWebSocket* server, AsyncWebSocketClient* client, AwsEventType type, void* arg, uint8_t* data, size_t len) {
     if (type == WS_EVT_CONNECT) {
         Serial.println("A socket client connected");

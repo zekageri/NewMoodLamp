@@ -25,10 +25,10 @@
 #include <headers/includes.h>
 #include <headers/defines.h>
 #include <headers/espTime.h>
+#include <headers/light.h>
 #include <headers/fileSystem.h>
 #include <headers/serverHandling.h>
 #include <headers/wifiHandling.h>
-#include <headers/light.h>
 #include <headers/webSocket.h>
 #include <headers/taskInits.h>
 

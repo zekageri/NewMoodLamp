@@ -41,6 +41,7 @@ static const inline void configWiFi(){
 
 static const inline void scanWiFi(){
     Serial.println("\nScanning for networks...");
+    light.setLoading(true);
     int n = WiFi.scanNetworks();
     if (n == 0) {
         Serial.println("no networks found");
@@ -58,6 +59,7 @@ static const inline void scanWiFi(){
         serializeJson(doc, f);
         serializeJsonPretty(doc, Serial);
         Serial.println("");
+        light.setLoading(false);
     }
 }
 
@@ -82,6 +84,7 @@ static const inline boolean connectToWiFi(){
         wifiConnTryCount = 0;
         isAPMode         = false;
         wifiConnected    = true;
+        light.success();
         return true;
     }
 }
@@ -122,6 +125,7 @@ static const inline void makeAP(){
     Serial.println(myIP);
     isAPMode        = true;
     wifiConnected   = false;
+    light.warning();
 }
 
 static const inline void initWiFi(){

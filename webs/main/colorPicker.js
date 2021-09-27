@@ -49,6 +49,7 @@ function makePicker(){
 }
 
 function getColorFromEvent(){
+    $(".checkbox-input").prop("checked", false);
     sendPacket({
         type:"rgb",
         r: RGB_Strip.color.rgb.r,

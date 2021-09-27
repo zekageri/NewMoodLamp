@@ -14,28 +14,20 @@ class rgbLight{
     byte animMode   = 0;
 
     private:
-            float pulseSpeed = 0.5;  // Larger value gives faster pulse.
-            uint8_t hueA = 15;
-            uint8_t satA = 230;
-            float valueMin = 120.0;
-            uint8_t hueB = 95;
-            uint8_t satB = 255;
-            float valueMax = 255.0;
-            uint8_t hue = hueA;
-            uint8_t sat = satA;
-            float val   = valueMin;
-
+            int fadeAmount = 10;
+            int pulsateColorBrightness = 255;
             inline void pulsateColorChange(){
-                float delta = (valueMax - valueMin) / 2.35040238;
-                float dV = ((exp(sin(pulseSpeed * millis()/2000.0*PI)) -0.36787944) * delta);
-                val = valueMin + dV;
-                hue = map(val, valueMin, valueMax, hueA, hueB);
-                sat = map(val, valueMin, valueMax, satA, satB);
-                for (int i = 0; i < NUM_LEDS; i++) {
-                    leds[i] = CHSV(hue, sat, val);
-                    leds[i].r = dim8_video(leds[i].r);
-                    leds[i].g = dim8_video(leds[i].g);
-                    leds[i].b = dim8_video(leds[i].b);
+                EVERY_N_MILLIS(1000){
+                    CRGB randomcolor  = CHSV(random(192), 255, 255);
+                    for(int i = 0; i < NUM_LEDS; i++ ){
+                        leds[i] = randomcolor;
+                        leds[i].fadeLightBy(pulsateColorBrightness);
+                    }
+                    FastLED.show();
+                    pulsateColorBrightness = pulsateColorBrightness + fadeAmount;
+                    if(pulsateColorBrightness == 0 || pulsateColorBrightness == 255){
+                        fadeAmount = -fadeAmount ; 
+                    }
                 }
             }
 
@@ -89,37 +81,177 @@ class rgbLight{
 
             /* PULSATE ANIMATION END */
 
-            inline void random(){}
+            inline void randomColors(){
+                EVERY_N_SECONDS(5){
+                    CRGB randomcolor  = CHSV(random(192), 255, 255);
+                    for (int i = 0; i < NUM_LEDS ; i++) {
+                        leds[i] = randomcolor;
+                    }
+                }
+            }
 
-            inline void rainbow(){}
+            inline void rainbow(){
+                int rainBowSpeed = 10;
+                int rainBowHue = 10;
+                uint8_t thisHue = beat8(rainBowSpeed,255);
+                fill_rainbow(leds, NUM_LEDS, thisHue, rainBowHue);
+            }
 
-            inline void fire(){}
+            #define COOLING  20
+            // Default 120, suggested range 50-200.
+            #define SPARKING 50
+            void Fire2012(){
+                static byte heat[NUM_LEDS];
+                for( int i = 0; i < NUM_LEDS; i++) {
+                    heat[i] = qsub8( heat[i],  random8(0, ((COOLING * 10) / NUM_LEDS) + 2));
+                }
+                for( int k= NUM_LEDS - 1; k >= 2; k--) {
+                    heat[k] = (heat[k - 1] + heat[k - 2] + heat[k - 2] ) / 3;
+                }
+                if( random8() < SPARKING ) {
+                    int y = random8(7);
+                    heat[y] = qadd8( heat[y], random8(160,255) );
+                }
+                for( int j = 0; j < NUM_LEDS; j++) {
+                    leds[j] = HeatColor( heat[j]);
+                }
+            }
+            inline void fire(){
+                Fire2012();
+                FastLED.delay(1000 / 60);
+            }
 
-            inline void water(){}
+            /* water */
+            void SnowSparkle(byte red, byte green, byte blue, int SparkleDelay, int SpeedDelay) {
+                setAll(red,green,blue);
+                
+                int Pixel = random(NUM_LEDS);
+                setPixel(Pixel,0xff,0xff,0xff);
+                FastLED.show();
+                delay(SparkleDelay);
+                setPixel(Pixel,red,green,blue);
+                FastLED.show();
+                delay(SpeedDelay);
+            }
+
+            void setPixel(int Pixel, byte red, byte green, byte blue) {
+                leds[Pixel].r = red;
+                leds[Pixel].g = green;
+                leds[Pixel].b = blue;
+            }
+
+            void setAll(byte red, byte green, byte blue) {
+                for(int i = 0; i < NUM_LEDS; i++ ) {
+                    setPixel(i, red, green, blue); 
+                }
+                FastLED.show();
+            }
+
+            inline void water(){
+                SnowSparkle(0x10, 0x10, 0x10, 20, random(100,1000));
+            }
+            /* water */
 
             inline void nature(){}
 
+            boolean cycle = false;
+            inline void allEffectRotate(){
+                EVERY_N_SECONDS(20){
+                    animMode++;
+                    if(animMode > 8){animMode = 1;}
+                }
+            }
+
+            boolean loadingIsOn = false;
+            void fadeall() {
+                for (int i = 0; i < NUM_LEDS; i++) {
+                    leds[i].nscale8(250);
+                }
+            }
+
+            int loading_delay = 30;
+            int loading_dir = 5;
+            inline void loadingAnim(){
+                if(loadingIsOn){
+                    for (int i = 0; i < NUM_LEDS; i++) {
+                        leds[i] = CHSV(0, 255, 255);
+                        FastLED.show();
+                        for(int j = 0; j < random(2,20); j++){
+                            fadeall();
+                        }
+                        delay(loading_delay);
+                        if (loading_dir == 1) {
+                            loading_delay++;
+                        }else if (loading_dir == 2) {
+                            loading_delay--;
+                        }
+                        if (loading_delay == 40) {
+                            loading_dir = 2;
+                        }else if (loading_delay == 10) {
+                            loading_dir = 1;
+                        }
+                    }
+                }
+            }
+
     public:
         rgbLight(){};
-        
-        inline void setAnimation(byte mode){
-            animMode = mode;
+
+        boolean delayOffBool = false;
+        long delayOffStartMS = 0;
+        inline void delayOff(){
+            delayOffBool = true;
+            delayOffStartMS = millis();
         }
 
-        inline void on(){
-            if( !isOn ){
-                isOn = true;
-                setRGB(lastRed,lastGreen,lastBlue);
+        inline void checkDelayOff(){
+            if(delayOffBool){
+                if(millis() - delayOffStartMS >= 5000){
+                    delayOffBool = false;
+                    off();
+                }
             }
         }
 
+        inline void success(){
+            animMode = 0;
+            fill_solid(leds, NUM_LEDS, CRGB::Green);
+            delayOff();
+        }
+        inline void warning(){
+            animMode = 0;
+            fill_solid(leds, NUM_LEDS, CRGB::Yellow);
+            delayOff();
+        }
+        inline void error(){
+            animMode = 0;
+            fill_solid(leds, NUM_LEDS, CRGB::Red);
+            delayOff();
+        }
+
+        inline void setLoading(boolean isOn){
+            animMode = 0;
+            for (int i = 0; i < NUM_LEDS; i++){leds[i] = CRGB::Black;}
+            loadingIsOn = isOn;
+        }
+
+        inline void setAnimation(byte mode){
+            FastLED.setBrightness(255);
+            loadingIsOn = false;
+            animMode = mode;
+            if(mode == 9){cycle = true;animMode = 1;}else{cycle = false;}
+        }
+
+        inline void on(){
+            isOn = true;
+            setRGB(lastRed,lastGreen,lastBlue);
+        }
+
         inline void off(){
-            if( isOn ){
-                isOn = false;
-                animMode = 0;
-                for (int i = 0; i < NUM_LEDS; i++){
-                    leds[i] = CRGB::Black;
-                }
+            isOn = false;
+            animMode = 0;
+            for (int i = 0; i < NUM_LEDS; i++){
+                leds[i] = CRGB::Black;
             }
         }
 
@@ -145,7 +277,7 @@ class rgbLight{
                     pulsate();
                     break;
                 case 4:
-                    random();
+                    randomColors();
                     break;
                 case 5:
                     rainbow();
@@ -166,11 +298,14 @@ class rgbLight{
 
         inline void setup(){
             FastLED.addLeds<CHIPSET, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalSMD5050 );
-            animMode = 1;
+            off();
         }
 
         inline void loop(){
+            if(cycle){allEffectRotate();}
             runAnimations();
+            loadingAnim();
+            checkDelayOff();
             FastLED.show();
         }
 };

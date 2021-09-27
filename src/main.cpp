@@ -18,5 +18,6 @@ void loop() {
     checkWiFi();
     checkWiFiStrength();
     restart();
+    clearSocketClients();
     dnsServer.processNextRequest(); // <-- for captiveportal?
 }

@@ -19,6 +19,7 @@
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
+    padding-bottom: 20px;
   }
   .checkbox-group > * {
     margin: 0.5rem 0.5rem;
