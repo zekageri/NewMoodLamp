@@ -4,7 +4,24 @@ body{
     padding: 0;
     overflow-x: hidden;
     overflow-y: auto;
+    color: white;
     background-color: #1f1d2b;
+}
+
+.notConnected{
+    background-color: #FFCC00;
+}
+.connected{
+    background-color: #00FF00;
+}
+
+.connectionIndicator{
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
 }
 
 .colorSection{
@@ -13,6 +30,6 @@ body{
 }
 
 .page{
-    padding-top: 20px;
+    padding: 20px 0px;
     height: 100%;
 }

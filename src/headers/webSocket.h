@@ -16,9 +16,14 @@ void onWsEvent(AsyncWebSocket* server, AsyncWebSocketClient* client, AwsEventTyp
                 packet["g"],
                 packet["b"]
             );
+        }else if( type == "anim" ){
+            light.setAnimation( packet["mode"] ) ;
         }else{
             Serial.print("Unknown packet type: ");
             Serial.println(type);
+            Serial.print("Message: ");
+            serializeJsonPretty(packet, Serial);
+            Serial.println("");
         }
     }
 }

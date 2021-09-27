@@ -1,0 +1,76 @@
+.wifiIco {
+    height: 40px;
+    margin: 5px 10px;
+    border: 1px solid white;
+    border-radius: .5rem;
+    padding: 5px;
+}
+
+.wifiConnBtn{
+    float: right;
+}
+
+.wifiConn{
+    height: 40px;
+    margin: 5px 10px;
+    border: 1px solid;
+    border-radius: 0.5rem;
+    padding: 5px;
+}
+
+.rescanIcoHolder{
+    color: #fff;
+    display: inline-block;
+    border: 1px solid;
+    border-radius: 0.2rem;
+    padding: 2px;
+    margin: 2px;
+    height: 38px;
+    width: 40px;
+    text-align: center;
+}
+
+.rescanIco{
+    height: 30px;
+    margin: 3px;
+}
+
+.networks{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 20px 10px 10px;
+}
+.networkContainer{
+    position: relative;
+    height: 65px;
+    width: 90%;
+    border: 1px solid;
+    padding: 5px;
+    border-radius: .5rem;
+    margin: 10px;
+}
+
+.wifiName{
+    position: absolute;
+    top: 27px;
+    font-size: x-large;
+    width: 190px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.boxClick{
+    box-shadow: 3px 4px 4px #544f4f;
+}
+
+@media only screen and (max-width: 400px) {
+    .wifiName{
+        width: 130px;
+    }
+  }
+
+.network-item{
+    display: inline-block;
+}

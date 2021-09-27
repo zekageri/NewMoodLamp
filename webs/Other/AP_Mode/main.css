@@ -1,0 +1,20 @@
+body{
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    color: white;
+    background-color: #1f1d2b;
+}
+
+.scanningAnim{
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid #ccc;
+}
+
+.stage{
+    display: inline-block;
+    margin-right: 15px;
+}

@@ -20,6 +20,7 @@
 #include <rom/rtc.h>
 #include <ESPmDNS.h>
 #include <FastLED.h>
+#include <DNSServer.h> // <-- for captive portal?
 
 #include <headers/includes.h>
 #include <headers/defines.h>

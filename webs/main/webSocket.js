@@ -28,14 +28,14 @@ function connectWebsocket(){
     socket = new WebSocket('ws://' + window.location.hostname + '/moodLamp');
     socketIsConnecting = true;
     socket.onopen = function(event){
-        console.log("Socket connected");
         socketIsConnected = true;
         socketIsConnecting = false;
+        $(".connectionIndicator").addClass("connected");
     }
     socket.onclose = function(event){
-        console.log("Socket closed");
         socketIsConnected = false;
         socketIsConnecting = false;
+        $(".connectionIndicator").removeClass("connected");
     }
     socket.onmessage = function(event){
         processSocketData(event.data);

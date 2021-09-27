@@ -4,23 +4,150 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#283238">
+    <meta name="msapplication-TileColor" content="#283238">
+    <meta name="theme-color" content="#283238">
+
     <title>Moodlamp</title>
-    <link rel="stylesheet" href="main.css">
-    
+
+    <link rel="stylesheet" href="mainStyle.bundle.min.css">
+
+    <script src="https://kit.fontawesome.com/a26f6e4ee4.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="mainScript.bundle.min.js"></script>
 </head>
 <body>
     
+    <div class="connectionIndicator notConnected"></div>
+
     <div class="page" id="home">
+
         <div class="colorSection">
             <div class="colorPicker"></div>
+        </div>
+
+        <div class="animSection">
+
+            <fieldset class="checkbox-group">
+                <legend class="checkbox-group-legend">Animációk</legend>
+                <div class="checkbox">
+                    <label class="checkbox-wrapper">
+                        <input animMode="1" type="checkbox" class="checkbox-input" />
+                        <span class="checkbox-tile">
+                            <span class="checkbox-icon">
+                                <i class="fas fa-wave-square animIco"></i>
+                            </span>
+                            <span class="checkbox-label">Breathe</span>
+                        </span>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label class="checkbox-wrapper">
+                        <input animMode="2" type="checkbox" class="checkbox-input" />
+                        <span class="checkbox-tile">
+                            <span class="checkbox-icon">
+                                <i class="fas fa-palette animIco"></i>
+                            </span>
+                            <span class="checkbox-label">Color-P</span>
+                        </span>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label class="checkbox-wrapper">
+                        <input animMode="3" type="checkbox" class="checkbox-input" />
+                        <span class="checkbox-tile">
+                            <span class="checkbox-icon">
+                                <i class="fab fa-creative-commons-sampling-plus animIco"></i>
+                            </span>
+                            <span class="checkbox-label">Pulsate</span>
+                        </span>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label class="checkbox-wrapper">
+                        <input animMode="4" type="checkbox" class="checkbox-input" />
+                        <span class="checkbox-tile">
+                            <span class="checkbox-icon">
+                                <i class="fas fa-random animIco"></i>
+                            </span>
+                            <span class="checkbox-label">Random</span>
+                        </span>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label class="checkbox-wrapper">
+                        <input animMode="5" type="checkbox" class="checkbox-input" />
+                        <span class="checkbox-tile">
+                            <span class="checkbox-icon">
+                                <i class="fas fa-rainbow animIco"></i>
+                            </span>
+                            <span class="checkbox-label">Rainbow</span>
+                        </span>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label class="checkbox-wrapper">
+                        <input animMode="6" type="checkbox" class="checkbox-input" />
+                        <span class="checkbox-tile">
+                            <span class="checkbox-icon">
+                                <i class="fas fa-fire animIco"></i>
+                            </span>
+                            <span class="checkbox-label">Fire</span>
+                        </span>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label class="checkbox-wrapper">
+                        <input animMode="7" type="checkbox" class="checkbox-input" />
+                        <span class="checkbox-tile">
+                            <span class="checkbox-icon">
+                                <i class="fas fa-water animIco"></i>
+                            </span>
+                            <span class="checkbox-label">Water</span>
+                        </span>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label class="checkbox-wrapper">
+                        <input animMode="8" type="checkbox" class="checkbox-input"/>
+                        <span class="checkbox-tile">
+                            <span class="checkbox-icon">
+                                <i class="fas fa-leaf animIco"></i>
+                            </span>
+                            <span class="checkbox-label">Nature</span>
+                        </span>
+                    </label>
+                </div>
+            </fieldset>
+
         </div>
     </div>
 
     <div class="page" id="settings" style="display: none;">
 
+    </div>
+
+    <div class="floating-container">
+        <div class="floating-button">
+            <i class="fas fa-ellipsis-v"></i>
+        </div>
+        <div class="element-container">
+          <span class="float-element">
+              <i href="#settings" class="fa fa-cogs"></i>
+          </span>
+          <span class="float-element">
+            <i class="fas fa-th-large"></i>
+          </span>
+          <span class="float-element">
+            <i href="#home" class="fa fa-home"></i>
+          </span>
+        </div>
     </div>
 
 </body>

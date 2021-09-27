@@ -7,6 +7,7 @@ static const inline void makeConfig();
 const char *Config      = "/Config.json";
 const char *ERRORLOG    = "/ErrorLog.json";
 const char *fsLog       = "/fsLog.json";
+const char *networks    = "/networks.json";
 /* FILES */
 
 String filesToCheck[] = {ERRORLOG,fsLog};
@@ -57,6 +58,15 @@ static const inline void fileCrawler(){
                 }
             }
         }
+    }
+}
+
+static const inline void restart(){
+    if(canRestart){
+        canRestart = false;
+        ws.closeAll();
+        vTaskDelay(150);
+        ESP.restart();
     }
 }
 

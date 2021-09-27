@@ -45,17 +45,18 @@ static const inline void scanWiFi(){
     if (n == 0) {
         Serial.println("no networks found");
     } else {
-        Serial.printf("\t%d networks found\n", n);
+        File f = LITTLEFS.open(networks, "w");
+        StaticJsonDocument<1500> doc;
+        JsonArray array = doc.to<JsonArray>();
         for (int i = 0; i < n; ++i) {
-            int resultNum = i + 1;
-            Serial.printf("\t-%d", resultNum);
-            Serial.print(": ");
-            Serial.print(WiFi.SSID(i));
-            Serial.print(" (");
-            Serial.print( getMeaningFullRSSI(WiFi.RSSI(i)) );
-            Serial.print(")");
-            Serial.println((WiFi.encryptionType(i) == WIFI_AUTH_OPEN)?" ":" -CLOSED");
+            JsonObject network = array.createNestedObject();
+            network["SSID"] = WiFi.SSID(i);
+            network["RSSI"] = WiFi.RSSI(i);
+            network["strength"]     = getMeaningFullRSSI(WiFi.RSSI(i));
+            network["encryption"]   = WiFi.encryptionType(i);
         }
+        serializeJson(doc, f);
+        serializeJsonPretty(doc, Serial);
         Serial.println("");
     }
 }
@@ -100,25 +101,32 @@ static const inline String getMeaningFullRSSI(int wifiStrength){
 
 static const inline void checkWiFiStrength(){
     EVERY_N_MINUTES(1){
-        config.lastWiFiStrength = getMeaningFullRSSI(WiFi.RSSI());
-        Serial.print("\nWiFi strength is ");
-        Serial.println(config.lastWiFiStrength);
+        if( !isAPMode ){
+            config.lastWiFiStrength = getMeaningFullRSSI(WiFi.RSSI());
+            Serial.print("\nWiFi strength is ");
+            Serial.println(config.lastWiFiStrength);
+        }
     }
 }
 
+IPAddress apIP(8, 8, 8, 8);
+IPAddress netMsk(255, 255, 255, 0);
+
 static const inline void makeAP(){
     WiFi.mode(WIFI_AP);
+    WiFi.softAPConfig(apIP, apIP, netMsk);
     WiFi.softAP(config.APssid);
+    delay(500);
     IPAddress myIP = WiFi.softAPIP();
     Serial.print("AP IP address: ");
     Serial.println(myIP);
-    isAPMode = true;
-    wifiConnected = false;
+    isAPMode        = true;
+    wifiConnected   = false;
 }
 
 static const inline void initWiFi(){
     WiFi.mode(WIFI_STA);
-    if( !connectToWiFi() ){ makeAP(); }
+    if( !connectToWiFi() ){ makeAP(); scanWiFi(); }
 }
 
 static const inline void checkWiFi(){

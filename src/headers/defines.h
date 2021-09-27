@@ -5,9 +5,14 @@
 #define FS_NO_GLOBALS
 #define U_LITTLEFS 100
 #define SERVER_PORT 80
-boolean isAPMode = false;
+boolean isAPMode    = false;
+boolean canRestart  = false;
 
 int ADMIN_CODE = 0;
+
+/* captive portal dns? */
+DNSServer dnsServer;
+/* captive portal dns? */
 
 /* rtc things */
 RTC_DS3231 rtc;
@@ -65,6 +70,7 @@ void onWsEvent(AsyncWebSocket* server, AsyncWebSocketClient* client, AwsEventTyp
 /* File system defines */
 static const inline void errorLog(String msg);
 static const inline void addToLog(String msg);
+static const inline void scanWiFi();
 /* File system defines */
 
 #endif 

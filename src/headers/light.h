@@ -43,7 +43,7 @@ class rgbLight{
                 return 0.5 - sin(asin(1 - 2 * x) / 3);}
 
             float a = 0;
-            inline void pulsate(){
+            inline void breathe(){
                 float b = (sin (a)+1)/2;
                 //float v = SMOOTHERSTEP(b);
                 float v = inverse_smoothstep(b);
@@ -52,9 +52,60 @@ class rgbLight{
                 a+=0.03;
                 FastLED.delay(15);
             }
+
+            /* PULSATE ANIMATION */
+            uint8_t bloodHue = 96;  // Blood color [hue from 0-255]
+            uint8_t bloodSat = 255;  // Blood staturation [0-255]
+            int flowDirection = -1;   // Use either 1 or -1 to set flow direction
+            uint16_t cycleLength = 1500;  // Lover values = continuous flow, higher values = distinct pulses.
+            uint16_t pulseLength = 150;  // How long the pulse takes to fade out.  Higher value is longer.
+            uint16_t pulseOffset = 200;  // Delay before second pulse.  Higher value is more delay.
+            uint8_t baseBrightness = 10;  // Brightness of LEDs when not pulsing. Set to 0 for off.
+
+            int sumPulse(int time_shift) {
+                //time_shift = 0;  //Uncomment to heart beat/pulse all LEDs together
+                int pulse1 = pulseWave8( millis() + time_shift, cycleLength, pulseLength );
+                int pulse2 = pulseWave8( millis() + time_shift + pulseOffset, cycleLength, pulseLength );
+                return qadd8( pulse1, pulse2 );  // Add pulses together without overflow
+            }
+
+            uint8_t pulseWave8(uint32_t ms, uint16_t cycleLength, uint16_t pulseLength) {
+                uint16_t T = ms % cycleLength;
+                if ( T > pulseLength) return baseBrightness;
+                uint16_t halfPulse = pulseLength / 2;
+                if (T <= halfPulse ) {
+                    return (T * 255) / halfPulse;  //first half = going up
+                } else {
+                    return((pulseLength - T) * 255) / halfPulse;  //second half = going down
+                }
+            }
+
+            inline void pulsate(){
+                for (int i = 0; i < NUM_LEDS ; i++) {
+                    uint8_t bloodVal = sumPulse( (5/NUM_LEDS/2) + (NUM_LEDS/2) * i * flowDirection );
+                    leds[i] = CHSV( bloodHue, bloodSat, bloodVal );
+                }
+            }
+
+            /* PULSATE ANIMATION END */
+
+            inline void random(){}
+
+            inline void rainbow(){}
+
+            inline void fire(){}
+
+            inline void water(){}
+
+            inline void nature(){}
+
     public:
         rgbLight(){};
         
+        inline void setAnimation(byte mode){
+            animMode = mode;
+        }
+
         inline void on(){
             if( !isOn ){
                 isOn = true;
@@ -81,15 +132,33 @@ class rgbLight{
                 }
             }
         }
-
+        
         inline void runAnimations(){
             switch(animMode){
                 case 1:
-                    pulsate();
+                    breathe();
                     break;
                 case 2:
                     pulsateColorChange();
-                break;
+                    break;
+                case 3:
+                    pulsate();
+                    break;
+                case 4:
+                    random();
+                    break;
+                case 5:
+                    rainbow();
+                    break;
+                case 6:
+                    fire();
+                    break;
+                case 7:
+                    water();
+                    break;
+                case 8:
+                    nature();
+                    break;
                 default:
                     break;
             }

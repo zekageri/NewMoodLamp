@@ -9,14 +9,14 @@ void setup() {
     getConfig();
     initWiFi();
     initServer();
-
     //scanWiFi();
-
-    makeConfig();
+    //makeConfig();
 }
 
 void loop() {
     fileCrawler();
     checkWiFi();
     checkWiFiStrength();
+    restart();
+    dnsServer.processNextRequest(); // <-- for captiveportal?
 }

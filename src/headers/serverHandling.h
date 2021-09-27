@@ -7,7 +7,10 @@ const char* gzippedFiles[] = {
     "/index.html",
     "/index-ap.html",
     "/mainScript.bundle.min.js",
-    "/main.css",
+    "/mainStyle.bundle.min.css",
+    "/apStyle.bundle.min.css",
+    "/apScript.bundle.min.js",
+    "/jquery3.6.0.min.js",
     "/NotFound.html"
 };
 
@@ -34,8 +37,38 @@ static const inline String getCookie(String name, String cookie) {
     return cookie.substring(startPos, stopPos);
 }
 
-static const inline void initServer(){
+class CaptiveRequestHandler : public AsyncWebHandler {
+public:
+  CaptiveRequestHandler() {
     endPoints();
+  }
+  virtual ~CaptiveRequestHandler() {}
+
+  bool canHandle(AsyncWebServerRequest *request){
+    //request->addInterestingHeader("ANY");
+    return true;
+  }
+
+  void handleRequest(AsyncWebServerRequest *request) {
+    String mainPath = "/index-ap.html";
+    AsyncWebServerResponse *response = request->beginResponse(LITTLEFS, checkPath(mainPath), "text/html");
+    if( isGzipped (mainPath.c_str()) ){ response->addHeader("Content-Encoding", "gzip"); }
+    request->send(response);
+  }
+};
+
+static const inline void setupCaptiveDNS(){
+    dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
+    dnsServer.start(53, "*", WiFi.softAPIP());
+}
+static const inline void initServer(){
+    if( isAPMode ){
+        Serial.println("Init captive portal and dns...");
+        setupCaptiveDNS();
+        server.addHandler(new CaptiveRequestHandler()); //.setFilter(ON_AP_FILTER)
+    }else{
+        endPoints();
+    }
     server.begin();
     ws.onEvent(onWsEvent);
     server.addHandler(&ws);
@@ -51,18 +84,92 @@ static const inline void endPoints(){
         request->send(response);
     });
 
-    server.on("/main.css", HTTP_GET, [](AsyncWebServerRequest *request) {
-        AsyncWebServerResponse *response = request->beginResponse(LITTLEFS, checkPath("/main.css"), "text/css");
-        if( isGzipped ("/main.css") ){ response->addHeader("Content-Encoding", "gzip"); }
+    server.on("/mainStyle.bundle.min.css", HTTP_GET, [](AsyncWebServerRequest *request) {
+        String path = "/mainStyle.bundle.min.css";
+        AsyncWebServerResponse *response = request->beginResponse(LITTLEFS, checkPath(path), "text/css");
+        if( isGzipped (path.c_str()) ){ response->addHeader("Content-Encoding", "gzip"); }
         request->send(response);
     });
 
     server.on("/mainScript.bundle.min.js", HTTP_GET, [](AsyncWebServerRequest *request) {
-        AsyncWebServerResponse *response = request->beginResponse(LITTLEFS, checkPath("/mainScript.bundle.min.js"), "text/javascript");
-        if( isGzipped ("/mainScript.bundle.min.js") ){ response->addHeader("Content-Encoding", "gzip"); }
+        String path = "/mainScript.bundle.min.js";
+        AsyncWebServerResponse *response = request->beginResponse(LITTLEFS, checkPath(path), "text/javascript");
+        if( isGzipped (path.c_str()) ){ response->addHeader("Content-Encoding", "gzip"); }
+        request->send(response);
+    });
+
+    server.on("/jquery3.6.0.min.js", HTTP_GET, [](AsyncWebServerRequest *request) {
+        String path = "/jquery3.6.0.min.js";
+        AsyncWebServerResponse *response = request->beginResponse(LITTLEFS, checkPath(path), "text/javascript");
+        if( isGzipped (path.c_str()) ){ response->addHeader("Content-Encoding", "gzip"); }
         request->send(response);
     });
     
+    server.on("/apStyle.bundle.min.css", HTTP_GET, [](AsyncWebServerRequest *request) {
+        String path = "/apStyle.bundle.min.css";
+        AsyncWebServerResponse *response = request->beginResponse(LITTLEFS, checkPath(path), "text/css");
+        if( isGzipped (path.c_str()) ){ response->addHeader("Content-Encoding", "gzip"); }
+        request->send(response);
+    });
+
+    server.on("/apScript.bundle.min.js", HTTP_GET, [](AsyncWebServerRequest *request) {
+        String path = "/apScript.bundle.min.js";
+        AsyncWebServerResponse *response = request->beginResponse(LITTLEFS, checkPath(path), "text/javascript");
+        if( isGzipped (path.c_str()) ){ response->addHeader("Content-Encoding", "gzip"); }
+        request->send(response);
+    });
+
+    server.on("/networks.json", HTTP_GET, [](AsyncWebServerRequest *request) {
+        String path = "/networks.json";
+        AsyncWebServerResponse *response = request->beginResponse(LITTLEFS, checkPath(path), "text/json");
+        request->send(response);
+    });
+    
+    server.on("/scanNetworks", HTTP_GET, [](AsyncWebServerRequest *request) {
+        scanWiFi();
+        AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "scanned");
+        response->addHeader("Access-Control-Allow-Origin", "*");
+        request->send(response);
+    });
+
+    server.on("/newNetworkData", HTTP_GET, [](AsyncWebServerRequest *request) {
+        AsyncWebParameter* p = request->getParam("SSID");
+        String SSID = p->value();
+        p = request->getParam("pass");
+        String password = p->value();
+        strlcpy(config.wifiPass,password.c_str(),sizeof(config.wifiPass));
+        strlcpy(config.wifiSSID,SSID.c_str(),sizeof(config.wifiSSID));
+        makeConfig();
+        AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "saved");
+        response->addHeader("Access-Control-Allow-Origin", "*");
+        request->send(response);
+        canRestart = true;
+    });
+
+    server.on("/downFile", HTTP_GET, [](AsyncWebServerRequest* request) {
+        AsyncWebParameter* p = request->getParam(0);
+        AsyncWebServerResponse* response;
+        const char* fileBuff = p->value().c_str();
+        size_t fileBuff_Size = strlen(fileBuff);
+        if (fileBuff_Size > 1) {
+            boolean isExists = LITTLEFS.exists(fileBuff);
+            if ( isExists ) {
+                response = request->beginResponse(LITTLEFS, fileBuff, "text/plain", true);
+                if (isGzipped(fileBuff)) {
+                    response->addHeader("Content-Encoding", "gzip");
+                    response->addHeader("Cache-Control", "max-age=31536000");
+                }
+                request->send(response);
+            } else {
+                response = request->beginResponse(204, "text/plain", "Nincs ilyen file");
+                response->addHeader("Access-Control-Allow-Origin", "*");
+                request->send(response);
+            }
+        } else {
+            request->send(500);
+        }
+    });
+
     server.serveStatic("/", LITTLEFS, "/").setCacheControl("max-age=30536000");
 
     server.onNotFound([](AsyncWebServerRequest *request) {
