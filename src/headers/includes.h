@@ -26,6 +26,7 @@
 #include <headers/defines.h>
 #include <headers/espTime.h>
 #include <headers/light.h>
+#include <headers/counters.h>
 #include <headers/fileSystem.h>
 #include <headers/serverHandling.h>
 #include <headers/wifiHandling.h>

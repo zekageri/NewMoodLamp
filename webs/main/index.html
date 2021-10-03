@@ -27,6 +27,26 @@
     <div class="connectionIndicator notConnected"></div>
 
     <div class="page" id="home">
+        
+        <div class="colorTools">
+            
+            <div class="toolBtns" style="display: none;">
+                <div class="colorToolBtn copy">
+                    <i class="fas fa-fill-drip" aria-hidden="true"></i>
+                </div>
+                <div class="colorToolBtn delete">
+                    <i class="far fa-trash-alt"></i>
+                </div>
+            </div>
+
+            <div class="colorToolOpenBtn">
+                <i class="toolBtn fas fa-chevron-right opening" aria-hidden="true"></i>
+            </div>
+
+        </div>
+
+
+        <div class="colorOptions"></div>
 
         <div class="colorSection">
             <div class="colorPicker"></div>
@@ -144,19 +164,41 @@
 
     </div>
 
+    <div class="page" id="apps" style="display: none;">
+
+        <div class="currentTimer">
+            <div class="currTimerWrapper">
+                <div class="hour timerHalf">
+                    <span id="hourTimer" class="timerText">00</span>
+                </div>
+                <div class="min timerHalf">
+                    <span id="minTimer" class="timerText">00</span>
+                </div>
+                <div class="sec timerHalf">
+                    <span id="secTimer" class="timerText">00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="offTimePickerWrapper">
+            <input type='tel' name='time_2' class='ios-time-picker is-dark'/>
+        </div>
+        
+    </div>
+
     <div class="floating-container">
         <div class="floating-button">
             <i class="fas fa-ellipsis-v"></i>
         </div>
         <div class="element-container">
-          <span class="float-element">
-              <i href="#settings" class="fa fa-cogs"></i>
+          <span class="float-element" href="#settings">
+              <i class="fa fa-cogs"></i>
           </span>
-          <span class="float-element">
+          <span class="float-element" href="#apps">
             <i class="fas fa-th-large"></i>
           </span>
-          <span class="float-element">
-            <i href="#home" class="fa fa-home"></i>
+          <span class="float-element activePage" href="#home">
+            <i class="fa fa-home"></i>
           </span>
         </div>
     </div>

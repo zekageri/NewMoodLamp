@@ -43,6 +43,7 @@ class rgbLight{
                 fill_solid(leds, NUM_LEDS, CHSV(0, 255, color));
                 a+=0.03;
                 FastLED.delay(15);
+                FastLED.show();
             }
 
             /* PULSATE ANIMATION */
@@ -77,6 +78,7 @@ class rgbLight{
                     uint8_t bloodVal = sumPulse( (5/NUM_LEDS/2) + (NUM_LEDS/2) * i * flowDirection );
                     leds[i] = CHSV( bloodHue, bloodSat, bloodVal );
                 }
+                FastLED.show();
             }
 
             /* PULSATE ANIMATION END */
@@ -87,6 +89,7 @@ class rgbLight{
                     for (int i = 0; i < NUM_LEDS ; i++) {
                         leds[i] = randomcolor;
                     }
+                    FastLED.show();
                 }
             }
 
@@ -95,6 +98,7 @@ class rgbLight{
                 int rainBowHue = 10;
                 uint8_t thisHue = beat8(rainBowSpeed,255);
                 fill_rainbow(leds, NUM_LEDS, thisHue, rainBowHue);
+                FastLED.show();
             }
 
             #define COOLING  20
@@ -119,6 +123,7 @@ class rgbLight{
             inline void fire(){
                 Fire2012();
                 FastLED.delay(1000 / 60);
+                FastLED.show();
             }
 
             /* water */
@@ -149,6 +154,7 @@ class rgbLight{
 
             inline void water(){
                 SnowSparkle(0x10, 0x10, 0x10, 20, random(100,1000));
+                FastLED.show();
             }
             /* water */
 
@@ -217,16 +223,19 @@ class rgbLight{
             animMode = 0;
             fill_solid(leds, NUM_LEDS, CRGB::Green);
             delayOff();
+            FastLED.show();
         }
         inline void warning(){
             animMode = 0;
             fill_solid(leds, NUM_LEDS, CRGB::Yellow);
             delayOff();
+            FastLED.show();
         }
         inline void error(){
             animMode = 0;
             fill_solid(leds, NUM_LEDS, CRGB::Red);
             delayOff();
+            FastLED.show();
         }
 
         inline void setLoading(boolean isOn){
@@ -253,6 +262,7 @@ class rgbLight{
             for (int i = 0; i < NUM_LEDS; i++){
                 leds[i] = CRGB::Black;
             }
+            FastLED.show();
         }
 
         inline void setRGB(byte r, byte g, byte b){
@@ -263,6 +273,7 @@ class rgbLight{
                     leds[i] = CRGB( lastRed, lastGreen, lastBlue );
                 }
             }
+            FastLED.show();
         }
         
         inline void runAnimations(){
@@ -306,7 +317,7 @@ class rgbLight{
             runAnimations();
             loadingAnim();
             checkDelayOff();
-            FastLED.show();
+            //FastLED.show();
         }
 };
 rgbLight light;

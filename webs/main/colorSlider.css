@@ -1,0 +1,82 @@
+
+.colorOptions {
+    position: relative;
+    margin: 0px 0 20px;
+    left: 0;
+    height: 40px;
+    width: 100%;
+    padding: 5px 0;
+    background-color: #80808021;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+.savedColor{
+    height: 20px;
+    width: 20px;
+    border: 1px solid gray;
+    margin: 10px 10px;
+    border-radius: 0.2rem;
+    background-color: aquamarine;
+    display:inline-block;
+    cursor: pointer;
+}
+
+
+/* color tools */
+
+.colorTools{
+    position: relative;
+    height: 42px;
+    width: 8%;
+    transition: 0.5s;
+    border: 1px solid #6b6767;
+    border-radius: .3rem;
+}
+
+.colorTools.active{
+    width: 30%;
+}
+
+.colorToolBtn{
+    margin: 5px;
+    display: inline;
+    position: relative;
+    top: 10px;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.colorToolBtn.copy{
+    left: 10px;
+    color: rgb(0, 195, 255);
+}
+
+.colorToolBtn.delete{
+    left: 15px;
+    color: orange;
+}
+.toolBtn{
+    transition: 0.3s;
+}
+.toolBtn.open{
+    transform: rotate(180deg);
+}
+
+.colorToolOpenBtn{
+    cursor: pointer;
+    display: inline;
+    position: absolute;
+    right: 8px;
+    top: 10px;
+    font-size: x-large;
+}
+
+.savedColor.activeColor{
+    border: 1px solid #00fd4c;
+    height: 23px;
+    width: 23px;
+}

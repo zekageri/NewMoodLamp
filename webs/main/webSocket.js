@@ -43,16 +43,37 @@ function connectWebsocket(){
 }
 
 function processSocketData(data){
-    let packet = {type: "Not json",content: data};
-    if(isJsonString(data)){
-        packet = JSON.parse(data);
-    }
+    let packet = {type: "Not json",msg: data};
+    if(isJsonString(data)){ packet = JSON.parse(data); }
     switch(packet.type){
-        case "message":
-            console.log(packet.content);
+        case "firmware":
+            processNewFirmware(packet.msg);
+            break;
+        case "userProg":
+            processUserProgram(packet.msg);
+            break;
+        case "progInfo":
+            processProgramInfo(packet.msg);
             break;
         default:
-            console.log("Unknown packet type: " + packet.type, "content: ", packet.content);
+            console.log("Unknown packet type: " + packet.type, "msg: ", packet.content);
+    }
+}
+
+function processProgramInfo(msg){
+    if(msg == "saved"){
+        console.log("Program saved");
+    }else{
+        console.log("Program not saved");
+    }
+}
+
+function processUserProgram(data){
+    if( isJsonString(data) ){
+        userProgram = JSON.parse(data);
+        addSavedColors();
+    }else{
+        console.warn("Nem tudtam betölteni a felhasználói programot. :(");
     }
 }
 

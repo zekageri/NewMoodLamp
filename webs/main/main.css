@@ -8,6 +8,16 @@ body{
     background-color: #1f1d2b;
 }
 
+::-webkit-scrollbar {
+    width: 6px;
+    height: 2px;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #ff7551;
+    border-radius: 10px;
+}
+
 .notConnected{
     background-color: #FFCC00;
 }
@@ -32,4 +42,8 @@ body{
 .page{
     padding: 20px 0px;
     height: 100%;
+}
+
+#home{
+    padding: 0px 0px 20px;
 }

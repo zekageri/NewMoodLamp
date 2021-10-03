@@ -5,6 +5,7 @@ static const inline void makeConfig();
 
 /* FILES */
 const char *Config      = "/Config.json";
+const char *userProg    = "/UserProg.json";
 const char *ERRORLOG    = "/ErrorLog.json";
 const char *fsLog       = "/fsLog.json";
 const char *networks    = "/networks.json";
@@ -151,8 +152,91 @@ static const inline void makeConfig(){
     file.close();
 }
 
-static const inline void checkForNewFirmware(){
+String userProgram = "";
+//const size_t userProgramSize = 25000;
 
+static const inline void getUserProgram(){
+    //userProgram.reserve(userProgramSize);
+    if( LITTLEFS.exists(userProg) ){
+        File file = LITTLEFS.open(userProg,"r");
+        if(file){
+            userProgram = "";
+            for (size_t i = 0; i < file.size(); i++) {
+                userProgram += (char)file.read();
+            }
+            Serial.println(userProgram);
+            file.close();
+        }else{
+            errorLog("Can't open user program file for read");
+        }
+    }else{
+        addToLog("No user program available.");
+    }
+}
+
+uint32_t lastClientID = 0;
+boolean canSendUserProg = false;
+
+static const inline void sendUserProgram(){
+    if( canSendUserProg ){
+        canSendUserProg = false;
+        if( LITTLEFS.exists(userProg) ){
+            sendSocket("userProg",userProgram,lastClientID);
+        }
+    }
+}
+
+static const inline void saveUserProg(String prog){
+    File file = LITTLEFS.open(userProg,"w");
+    if(file){
+        file.print(prog);
+        file.close();
+        sendSocket("progInfo","saved");
+        userProgram = prog;
+    }else{
+        errorLog("Can't open user program file for write");
+        sendSocket("progInfo","failed");
+    }
+}
+
+boolean newFirmwareAvailable = false;
+boolean canDownloadNewFirmware = false;
+String newFirmwareInfo = "";
+static const inline void checkForNewFirmware(){
+    EVERY_N_MINUTES(5){
+        if( WiFi.isConnected() ){
+            HTTPClient http;
+            http.begin(config.serverURL, config.root_ca);
+            int httpCode = http.GET();    
+            if (httpCode > 0) {
+                String payload = http.getString();
+                StaticJsonDocument<2000> doc;
+                DeserializationError error = deserializeJson(doc, payload);
+                if (error) {
+                    errorLog("Firmware payload deserialization error.");
+                }else{
+                    if( doc["version"] > config.firmwareVersion ){
+                        newFirmwareAvailable = true;
+                        newFirmwareInfo = payload;
+                        sendSocket("firmware",payload);
+                        Serial.println("New firmware available!");
+                    }
+                }
+            }else {
+                errorLog("Error on firmware HTTPS request");
+            }
+            http.end();
+        }else{
+            Serial.println("WiFi not connected, can't check for firmware...");
+        }
+    }
+}
+
+static const inline void downloadNewFirmware(){
+    if(canDownloadNewFirmware){
+        canDownloadNewFirmware = false;
+        Serial.println("Downloading new firmware...");
+    }
 }
 
 static const inline void handleNewFirmware(){

@@ -6,6 +6,7 @@ void setup() {
     Wire.begin(SDA,SCL,400000);
     LITTLEFS.begin();
     initTasks();
+    getUserProgram();
     getConfig();
     initWiFi();
     initServer();
@@ -14,10 +15,12 @@ void setup() {
 }
 
 void loop() {
+    checkForNewFirmware();
     fileCrawler();
     checkWiFi();
     checkWiFiStrength();
     restart();
     clearSocketClients();
+    sendUserProgram();
     dnsServer.processNextRequest(); // <-- for captiveportal?
 }

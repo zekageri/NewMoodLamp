@@ -9,9 +9,14 @@ static const inline void lightTaskInit(int Stack_Depth, int Core, int Priority) 
     xTaskCreatePinnedToCore(lightTask, "lightTask", Stack_Depth, NULL, Priority, &lightTask_Handle, Core);
 }
 
+static const inline void counterTaskInit(int Stack_Depth, int Core, int Priority) {
+    xTaskCreatePinnedToCore(counterTask, "counterTask", Stack_Depth, NULL, Priority, &counterTask_Handle, Core);
+}
+
 static const inline void initTasks(){
     espTimeTaskInit(3048, 1, 1);
     lightTaskInit(5000, 1, 1);
+    counterTaskInit(3000,1,1);
 }
 
 #endif
