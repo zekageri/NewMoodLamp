@@ -3,7 +3,7 @@ $(document).ready(function () {
     colorInit();
     animsInit();
     initNav();
-    countDownInit();
+    initTimePickers();
 });
 
 var userProgram = {};

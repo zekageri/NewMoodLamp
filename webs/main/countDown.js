@@ -1,17 +1,27 @@
 
 var countDownDate = new Date("Sep 25, 2025 15:00:00").getTime();
+var countDownTimer;
 
-function countDownInit(){
-    setCountDownTime(4600000);
-    countdownTimeStart();
+
+function stopCountDown(){
+    clearInterval(countDownTimer);
 }
 
-function setCountDownTime(setSec){
-    countDownDate = new Date().getTime() + (setSec*1000);
+function startCountDown(time){
+    stopCountDown();
+    let ms = hmsToSecondsOnly(time)*1000;
+    sendPacket({"type":"countDown","time":ms});
+    setCountDownTime(ms);
+    countdownTimeStart();
+    $(".swOffBtn").addClass("runningCountDown");
+}
+
+function setCountDownTime(ms){
+    countDownDate = new Date().getTime() + ms;
 }
 
 function countdownTimeStart(){
-    var x = setInterval(function() {
+    countDownTimer = setInterval(function() {
         var now = new Date().getTime();
         var distance = countDownDate - now;
         var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -24,8 +34,8 @@ function countdownTimeStart(){
         $("#minTimer").text(minutes);
         $("#secTimer").text(seconds);
         if (distance < 0) {
-            clearInterval(x);
-            console.log("Timer hit!");
+            clearInterval(countDownTimer);
+            $(".swOffBtn").removeCLass("runningCountDown");
         }
     }, 1000);
 }

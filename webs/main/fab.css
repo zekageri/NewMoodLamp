@@ -2,14 +2,11 @@
     0% {
       transform: translatey(100px);
       opacity: 0;
-    }
-    30% {
+    }30% {
       transform: translateX(-50px) scale(0.4);
-    }
-    70% {
+    }70% {
       transform: translateX(0px) scale(1.2);
-    }
-    100% {
+    }100% {
       transform: translatey(0px) scale(1);
       opacity: 1;
     }
@@ -18,14 +15,11 @@
     0% {
       transform: translatey(100px);
       opacity: 0;
-    }
-    30% {
+    }30% {
       transform: translateX(-50px) scale(0.4);
-    }
-    70% {
+    }70% {
       transform: translateX(0px) scale(1.2);
-    }
-    100% {
+    }100% {
       transform: translatey(0px) scale(1);
       opacity: 1;
     }
@@ -55,16 +49,16 @@
     outline: none;
   }
   .floating-container:hover .element-container .float-element:nth-child(1) {
-    -webkit-animation: come-in 0.4s forwards 0.2s;
-            animation: come-in 0.4s forwards 0.2s;
+    -webkit-animation: come-in 0.2s forwards 0.1s;
+            animation: come-in 0.2s forwards 0.1s;
   }
   .floating-container:hover .element-container .float-element:nth-child(2) {
-    -webkit-animation: come-in 0.4s forwards 0.4s;
-            animation: come-in 0.4s forwards 0.4s;
+    -webkit-animation: come-in 0.2s forwards 0.3s;
+            animation: come-in 0.2s forwards 0.3s;
   }
   .floating-container:hover .element-container .float-element:nth-child(3) {
-    -webkit-animation: come-in 0.4s forwards 0.6s;
-            animation: come-in 0.4s forwards 0.6s;
+    -webkit-animation: come-in 0.2s forwards 0.5s;
+            animation: come-in 0.2s forwards 0.5s;
   }
   .floating-container .floating-button {
     position: absolute;

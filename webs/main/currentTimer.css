@@ -1,11 +1,12 @@
 .currentTimer{
-    position: sticky;
-    top: 10px;
-    left: 10px;
+    position: fixed;
+    top: 2%;
+    left: 2%;
     height: 50px;
     width: 200px;
-    border-radius: .5rem;
+    border-radius: .3rem;
     border: 1px solid gray;
+    display: inline-block;
 }
 
 .currTimerWrapper{
@@ -33,4 +34,21 @@
     position: relative;
     font-size: 40px;
     height: 100%;
+}
+
+.swOffBtn{
+    position: fixed;
+    left: 53%;
+    top: 2%;
+    height: 40px;
+    width: 46px;
+    border: 1px solid;
+    border-radius: .3rem;
+    font-size: xx-large;
+    text-align: center;
+    padding: 5px;
+}
+
+.runningCountDown{
+    color: hotpink;
 }

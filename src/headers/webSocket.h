@@ -31,6 +31,8 @@ void onWsEvent(AsyncWebSocket* server, AsyncWebSocketClient* client, AwsEventTyp
             light.setAnimation( packet["mode"] ) ;
         }else if( type == "saveUserProg" ){
             saveUserProg( packet["prog"] );
+        }else if( type == "countDown"){
+            startCountDown( packet["time"] );
         }else{
             Serial.print("Unknown packet type: ");
             Serial.println(type);
