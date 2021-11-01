@@ -15,7 +15,7 @@ static const inline void counterTaskInit(int Stack_Depth, int Core, int Priority
 
 static const inline void initTasks(){
     espTimeTaskInit(3048, 1, 1);
-    lightTaskInit(5000, 1, 1);
+    lightTaskInit(10000, 1, 1);
     counterTaskInit(3000,1,1);
 }
 

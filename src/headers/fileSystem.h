@@ -152,11 +152,8 @@ static const inline void makeConfig(){
     file.close();
 }
 
-String userProgram = "";
-//const size_t userProgramSize = 25000;
 
 static const inline void getUserProgram(){
-    //userProgram.reserve(userProgramSize);
     if( LITTLEFS.exists(userProg) ){
         File file = LITTLEFS.open(userProg,"r");
         if(file){
@@ -164,6 +161,7 @@ static const inline void getUserProgram(){
             for (size_t i = 0; i < file.size(); i++) {
                 userProgram += (char)file.read();
             }
+            Serial.print("User program: ");
             Serial.println(userProgram);
             file.close();
         }else{

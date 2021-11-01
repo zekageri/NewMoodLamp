@@ -29,6 +29,7 @@ RTC_DS3231 rtc;
 
 boolean canCalculateSunTimes = false;
 boolean wifiConnected = false;
+String userProgram = "";
 
 /* server things */
 AsyncWebServer server(SERVER_PORT);
@@ -46,11 +47,11 @@ struct Config {
     char wifiPass[32]   = "Administrator";
 
     int firmwareVersion = 1;
-    boolean dhcpIsOn = true;
+    boolean dhcpIsOn = false;
     
     String lastWiFiStrength = "Good";
     
-    IPAddress ip    = IPAddress(192, 168, 0, 33);
+    IPAddress ip    = IPAddress(192, 168, 0, 38);
     IPAddress sub   = IPAddress(255, 255, 248, 0);
     IPAddress gw    = IPAddress(192, 168, 0, 1);
     IPAddress dns1  = IPAddress(8,8,8,8);

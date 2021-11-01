@@ -200,6 +200,79 @@ class rgbLight{
                 }
             }
 
+        #define ONOFF_SWITCH    4
+        #define NEXT_SWITCH     32
+        #define nextSwitchTrashold  20 // 48
+        #define onOffSwitchTrashold 80 // 92
+        #define btnWatchMs 80
+        #define MAX_TOUCH_READ 50
+
+        long lastNextTouch      = 0;
+        long lastOnOffTouch     = 0;
+        const int touchMinTime  = 500;
+        int touchValueCounter   = 0;
+        int readedNEXT_Value    = 0;
+
+        inline void check_NextButton(){
+            readedNEXT_Value += touchRead(NEXT_SWITCH);
+            touchValueCounter++;
+            if(touchValueCounter > MAX_TOUCH_READ){
+                touchValueCounter = 0;
+                int computed = readedNEXT_Value/MAX_TOUCH_READ;
+                EVERY_N_MILLIS(btnWatchMs){
+                    if( computed != 0 && computed < nextSwitchTrashold ){
+                        if( millis() - lastNextTouch >= touchMinTime ){
+                            lastNextTouch = millis();
+                            //Serial.printf("Next Touch val: %d\n",readedNEXT_Value);
+                            if(isOn){
+                                nextSavedColorByBtn();
+                            }
+                        }
+                    }
+                }
+                readedNEXT_Value = 0;
+            }
+        }
+
+        inline void check_OnOffButton(){
+            int touchValue = touchRead(ONOFF_SWITCH);
+            EVERY_N_MILLIS(btnWatchMs){
+                if( touchValue != 0 && touchValue < onOffSwitchTrashold ){
+                    if( millis() - lastOnOffTouch >= touchMinTime ){
+                        lastOnOffTouch = millis();
+                        //Serial.printf("ON/OFF Touch val: %d\n",touchValue);
+                        toggleOnOff();
+                    }
+                }
+            }
+        }
+
+        int lastSavedColorIndex = 0;
+        inline void nextSavedColorByBtn(){
+            StaticJsonDocument<5000> doc;
+            DeserializationError error = deserializeJson(doc, userProgram);
+            if (error) {
+                String errorMsg = "User program deserialization error: ";
+                errorLog( errorMsg + error.c_str() );
+            }else{
+                JsonArray savedColors = doc["savedColors"];
+                lastSavedColorIndex++;
+                if( !savedColors[lastSavedColorIndex] ){lastSavedColorIndex = 0;}
+                JsonObject savedColor = savedColors[lastSavedColorIndex];
+                String hexStringColor = savedColor["color"].as<String>();
+                uint32_t data = (uint32_t) strtol((const char *) &hexStringColor.c_str()[1], NULL, 16);
+                int r = ((data >> 16) & 0xFF);
+                int g = ((data >> 8) & 0xFF);
+                int b = ((data >> 0) & 0xFF);
+                setRGB(r,g,b);
+            }
+        }
+
+        inline void checkButtons(){
+            check_NextButton();
+            check_OnOffButton();
+        }
+
     public:
         rgbLight(){};
 
@@ -251,9 +324,22 @@ class rgbLight{
             if(mode == 9){cycle = true;animMode = 1;}else{cycle = false;}
         }
 
+        inline void toggleOnOff(){
+            if(isOn){
+                off();
+            }else{
+                on();
+            }
+        }
+
         inline void on(){
             isOn = true;
-            setRGB(lastRed,lastGreen,lastBlue);
+            if( lastRed == 0 && lastGreen == 0 && lastBlue == 0 ){
+                Serial.println("Setting sunset color");
+                setRGB(253, 94, 83); // sunset color
+            }else{
+                setRGB(lastRed,lastGreen,lastBlue);
+            }
         }
 
         inline void off(){
@@ -317,7 +403,7 @@ class rgbLight{
             runAnimations();
             loadingAnim();
             checkDelayOff();
-            //FastLED.show();
+            checkButtons();
         }
 };
 rgbLight light;
