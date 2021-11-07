@@ -26,10 +26,12 @@ Hardware:
    - Micro usb socket         https://www.aliexpress.com/item/32916626306.html?spm=a2g0o.productlist.0.0.47c046901ntSfE&algo_pvid=6d1f8f21-97d8-4271-b591-                d4eb53ebdd3f&algo_expid=6d1f8f21-97d8-4271-b591-d4eb53ebdd3f-27&btsid=0b0a556316045021932853378ed2e1&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_
    - Controll buttons ( Mode cycling and Power button )
    
-   Pictures:
+   Some picture:
    
    Web
+   
    ![alt text](https://github.com/zekageri/NewMoodLamp/blob/main/images/web.png?raw=true)
    
    Lamp
-   ![alt text](https://komakweb.ddns.net/Közös/Koma_k%20MoodLamp/IMG_20201213_203557.jpg)
+   
+   ![alt text](https://github.com/zekageri/NewMoodLamp/blob/main/images/lamp.jpg?raw=true)
