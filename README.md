@@ -32,4 +32,4 @@ Hardware:
    ![alt text](https://github.com/zekageri/NewMoodLamp/blob/main/images/web.png?raw=true)
    
    Lamp
-   ![alt text](https://komakweb.ddns.net/Közös/Koma_k MoodLamp/IMG_20201213_203557.jpg?raw=true)
+   ![alt text](https://komakweb.ddns.net/Közös/Koma_k%20MoodLamp/IMG_20201213_203557.jpg)
